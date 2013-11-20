@@ -19,6 +19,7 @@
             method      : "get",
             filter      : true,
             triggerEmpty: false,
+            limit       : 0,
             onAjaxStart : function () {
             },
             onFinish    : function () {
@@ -104,7 +105,9 @@
                     $content.after($frame);
                 }
                 $frame.css("position", "static").left(left).top(top).width(width);
+                var count = 0;
                 for (var item in data) {
+                    count++;
                     var text = "";
                     var c = "";
                     if (typeof (item) == "Object") {
@@ -116,29 +119,35 @@
                     var $item = $('<div class="moreinput-label">' + text + '</div>');
                     if (c)$item.addClass(c);
                     $item.appendTo($frame);
+                    if (count >= settings.limit && settings.limit > 0)break;
                 }
                 var marginL = 0, marginT = 0;
                 var frameH = $frame.outerHeight();
                 switch (settings.layout) {
                     case "top":
                     {
-                        $frame.addClass("moreinput-layout-top");
-                        marginT = height;
+                        $frame.addClass("moreinput-layout-top").css("margin-top", "-" + $frame.outerHeight() + "px");
                         break;
                     }
                     case "left":
                     {
-                        $frame.addClass("moreinput-layout-left");
+                        $frame.addClass("moreinput-layout-left").css({
+                            "margin-left": "-" + $frame.outerWidth() + "px",
+                            "margin-top" : (height - $frame.outerHeight()) / 2 + "px"
+                        });
                         break;
                     }
                     case "right":
                     {
-                        $frame.addClass("moreinput-layout-right");
+                        $frame.addClass("moreinput-layout-right").css({
+                            "margin-left": width + "px",
+                            "margin-top" : (height - $frame.outerHeight()) / 2 + "px"
+                        });
                         break;
                     }
                     default:
                     {
-                        $frame.addClass("moreinput-layout-top");
+                        $frame.addClass("moreinput-layout-bottom").css("margin-top", height + "px");
                         break;
                     }
                 }
